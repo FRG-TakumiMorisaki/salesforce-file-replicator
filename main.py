@@ -86,9 +86,9 @@ def main():
                     error_writer.writerow([record_id, '', '', '', '', 'error', 'ContentVersion not found'])
                     continue
                 filename = f"{version.get('Title')}.{version.get('FileExtension')}" if version.get('FileExtension') else version.get('Title')
-                data = version.get('VersionData')
+                data = client.download_content_version_data(version)
                 try:
-                    saved_path = save_file(output_dir / record_id, filename, data if isinstance(data, bytes) else data.encode())
+                    saved_path = save_file(output_dir / record_id, filename, data)
                     success_writer.writerow([
                         record_id,
                         version.get('Id'),

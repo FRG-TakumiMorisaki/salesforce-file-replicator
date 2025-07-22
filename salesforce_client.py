@@ -35,3 +35,18 @@ class SalesforceClient:
         )
         records = self.sf.query_all(soql)["records"]
         return records[0] if records else None
+
+    def download_content_version_data(self, version: Dict) -> bytes:
+        """Download the binary data for the given ContentVersion record."""
+        data = version.get("VersionData")
+        if self.test_mode:
+            if isinstance(data, bytes):
+                return data
+            return data.encode() if data else b""
+        if not isinstance(data, str):
+            # When using real API this should be a URL string
+            return b""
+        url = self.sf.base_url + data
+        response = self.sf.session.get(url)
+        response.raise_for_status()
+        return response.content
