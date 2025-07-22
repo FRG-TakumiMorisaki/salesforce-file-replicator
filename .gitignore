@@ -1,4 +1,6 @@
-/.env
-/__pycache__/
-/logs/
-/soql/
+.env
+__pycache__/
+logs/
+output/
+soql/*.soql
+!soql/sample.soql
