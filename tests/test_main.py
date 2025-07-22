@@ -35,6 +35,7 @@ def test_main_flow(tmp_path, monkeypatch):
     soql_file = tmp_path / 'q.soql'
     soql_file.write_text('SELECT Id FROM Account', encoding='utf-8')
     output_dir = tmp_path / 'out'
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     mock_client = create_mock_client(tmp_path)
 

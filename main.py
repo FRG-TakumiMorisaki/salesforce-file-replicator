@@ -6,7 +6,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import List
 
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+except Exception:  # pragma: no cover - optional dependency for tests
+    def load_dotenv(*_args, **_kwargs):
+        return None
 
 from salesforce_client import SalesforceClient
 from file_saver import save_file, ensure_directory
@@ -94,7 +98,7 @@ def main():
                         version.get('Id'),
                         filename,
                         saved_path.name,
-                        str(saved_path.relative_to(Path.cwd())),
+                        str(saved_path.relative_to(Path.cwd()) if saved_path.is_relative_to(Path.cwd()) else saved_path),
                         'success',
                         'OK'
                     ])

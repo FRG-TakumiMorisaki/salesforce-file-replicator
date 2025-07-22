@@ -1,7 +1,10 @@
 import os
 from typing import List, Dict, Optional
 
-from simple_salesforce import Salesforce
+try:
+    from simple_salesforce import Salesforce
+except Exception:  # pragma: no cover - optional dependency for test mode
+    Salesforce = None
 
 
 class SalesforceClient:
@@ -9,7 +12,14 @@ class SalesforceClient:
         self.test_mode = test_mode
         self.mock_data = mock_data or {}
         if not self.test_mode:
-            self.sf = Salesforce(username=username, password=password, security_token=security_token, domain=domain)
+            if Salesforce is None:
+                raise ImportError("simple_salesforce is required for non-test mode")
+            self.sf = Salesforce(
+                username=username,
+                password=password,
+                security_token=security_token,
+                domain=domain,
+            )
         else:
             self.sf = None
 
@@ -46,7 +56,11 @@ class SalesforceClient:
         if not isinstance(data, str):
             # When using real API this should be a URL string
             return b""
-        url = self.sf.base_url + data
+        if data.startswith("http"):
+            url = data
+        else:
+            base = self.sf.base_url.split("/services")[0]
+            url = base + data
         response = self.sf.session.get(url)
         response.raise_for_status()
         return response.content
