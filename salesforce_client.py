@@ -47,20 +47,17 @@ class SalesforceClient:
         return records[0] if records else None
 
     def download_content_version_data(self, version: Dict) -> bytes:
-        """Download the binary data for the given ContentVersion record."""
         data = version.get("VersionData")
         if self.test_mode:
-            if isinstance(data, bytes):
-                return data
-            return data.encode() if data else b""
+            return data if isinstance(data, bytes) else (data or "").encode()
+
         if not isinstance(data, str):
-            # When using real API this should be a URL string
             return b""
-        if data.startswith("http"):
-            url = data
-        else:
-            base = self.sf.base_url.split("/services")[0]
-            url = base + data
-        response = self.sf.session.get(url)
-        response.raise_for_status()
-        return response.content
+
+        # 絶対 URL を合成
+        base = self.sf.base_url.split("/services")[0]
+        url  = data if data.startswith("http") else base + data
+
+        # ★ simple-salesforce のリフレッシュ機構付きで呼び出す
+        resp = self.sf._call_salesforce("GET", url)
+        return resp.content
