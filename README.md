@@ -2,6 +2,16 @@
 
 This project downloads files attached to Salesforce records and stores them in a local directory structure. Records are selected via a SOQL query, and each attachment is saved under a folder named with the record ID. Execution logs are written to CSV files.
 
+## Open Source Usage & Distribution
+
+This project leverages open-source software dependencies listed in `requirements.txt`. Redistribution of modified versions is prohibited, as this remains our proprietary solution. The following table is provided so customers can understand which licenses are used.
+
+| パッケージ | ライセンス | 根拠 |
+| --- | --- | --- |
+| simple-salesforce (>=1.12.2) | Apache-2.0 | PyPI の “License Expression: Apache-2.0” 記載 |
+| python-dotenv | BSD-3-Clause | PyPI の “License Expression: BSD-3-Clause” 記載 |
+| pytest | MIT | 公式ドキュメント/リポジトリで MIT と明記 |
+
 ## Features
 
 - Read SOQL statements from `.soql` files
